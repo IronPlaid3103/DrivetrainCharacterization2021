@@ -7,6 +7,8 @@
 
 package dc;
 
+import com.analog.adis16470.frc.ADIS16470_IMU;
+
 import java.util.function.Supplier;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
@@ -120,9 +122,9 @@ public class Robot extends TimedRobot {
 
 
         rightEncoderPosition = ()
-          -> encoder.getPosition() * encoderConstant;
+          -> -encoder.getPosition() * encoderConstant;
         rightEncoderRate = ()
-          -> encoder.getVelocity() * encoderConstant / 60.;
+          -> -encoder.getVelocity() * encoderConstant / 60.;
 
         break;
       case LEFT:
@@ -159,9 +161,9 @@ public class Robot extends TimedRobot {
         
     
 
-    CANSparkMax rightMotor = setupCANSparkMax(2, Sides.RIGHT, true);
-    CANSparkMax rightFollowerID4 = setupCANSparkMax(4, Sides.FOLLOWER, true);
-    rightFollowerID4.follow(rightMotor, true);
+    CANSparkMax rightMotor = setupCANSparkMax(2, Sides.RIGHT, false);
+    CANSparkMax rightFollowerID4 = setupCANSparkMax(4, Sides.FOLLOWER, false);
+    rightFollowerID4.follow(rightMotor, false);
     drive = new DifferentialDrive(leftMotor, rightMotor);
     drive.setDeadband(0);
 
@@ -171,8 +173,16 @@ public class Robot extends TimedRobot {
 
     // Note that the angle from the NavX and all implementors of WPILib Gyro
     // must be negated because getAngle returns a clockwise positive angle
-    AHRS navx = new AHRS(SerialPort.Port.kMXP);
-    gyroAngleRadians = () -> -1 * Math.toRadians(navx.getAngle());
+    // AHRS navx = new AHRS(SerialPort.Port.kMXP);
+    // gyroAngleRadians = () -> -1 * Math.toRadians(navx.getAngle());
+
+    // This should instantiate an ADIS16470 gyro, which is what we're using in 2021 - this requires manual (offline)
+    // installation of the drivers from https://github.com/juchong/ADIS16470-RoboRIO-Driver (see instructions on this page)
+    // Ensure you copy the contents of the indicated .zip file to C:\Users\Public\wpilib\2021 - do not try to follow
+    // their instructions, because VS Code will not properly import if you just point it at a .zip file.
+    ADIS16470_IMU gyro = new ADIS16470_IMU();
+    gyroAngleRadians = () -> -1 * Math.toRadians(gyro.getAngle());
+
 
     // Set the update rate instead of using flush because of a ntcore bug
     // -> probably don't want to do this on a robot in competition

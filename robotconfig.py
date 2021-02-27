@@ -11,7 +11,7 @@
     # If doing drive test, treat this as the left side of the drivetrain
     "motorsInverted": [False, False],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightMotorsInverted": [True, True],
+    "rightMotorsInverted": [False, False],
     # Encoder edges-per-revolution (*NOT* cycles per revolution!)
     # **Note pass an EPR of 1 for the NEO Integrated encoder as the SparkMax
     # already handles this conversion**
@@ -48,6 +48,7 @@
     # "" (NavX using default SPI, ADXRS450 using onboard CS0, or no gyro)
     "gyroPort": "SerialPort.Port.kMXP",
 }
+
 
 
 
